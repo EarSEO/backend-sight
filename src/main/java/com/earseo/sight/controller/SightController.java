@@ -1,9 +1,11 @@
 package com.earseo.sight.controller;
 
 import com.earseo.sight.common.BaseResponse;
+import com.earseo.sight.dto.response.CurationList;
 import com.earseo.sight.dto.response.DocentResponse;
 import com.earseo.sight.dto.response.SightDetailInfoResponse;
 import com.earseo.sight.dto.response.SightMapInfoList;
+import com.earseo.sight.service.CurationService;
 import com.earseo.sight.service.SightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class SightController {
 
     private final SightService sightService;
+    private final CurationService curationService;
 
     @Operation(
             summary = "지도 사각형 영역 내 관광지 조회",
@@ -353,5 +356,24 @@ public class SightController {
             String sightId
     ) {
         return ResponseEntity.ok(BaseResponse.ok(sightService.getDocent(sightId)));
+    }
+
+    @Operation(
+            summary = "큐레이션 목록 조회",
+            description = "큐레이션 목록을 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "큐레이션 목록 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CurationList.class)
+                    )
+            )
+    })
+    @GetMapping("/curation")
+    public ResponseEntity<BaseResponse<CurationList>> getCurationList() {
+        return ResponseEntity.ok(BaseResponse.ok(curationService.getCurationList()));
     }
 }
