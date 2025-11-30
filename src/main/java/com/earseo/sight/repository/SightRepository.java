@@ -2,6 +2,7 @@ package com.earseo.sight.repository;
 
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import com.earseo.sight.dto.projection.SightMapItemDto;
+import com.earseo.sight.dto.projection.SightMetaDto;
 import com.earseo.sight.entity.Sight;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,13 +13,13 @@ import java.util.List;
 public interface SightRepository extends JpaRepository<Sight, Long> {
 
     @Query(value = """
-        SELECT s.content_id, s.title, s.map_x, s.map_y
-        FROM sight s
-        WHERE ST_Intersects(
-            s.geom,
-            ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)
-        )
-        """, nativeQuery = true)
+            SELECT s.content_id, s.title, s.map_x, s.map_y
+            FROM sight s
+            WHERE ST_Intersects(
+                s.geom,
+                ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)
+            )
+            """, nativeQuery = true)
     List<SightMapItemDto> findByRectangle(
             @Param("minLongitude") Double minLongitude,
             @Param("minLatitude") Double minLatitude,
@@ -48,14 +49,26 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
                     s.geom::geography,
                     ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
                 ) as distance,
-                d.docent_url
+                d.docent_url,
+                CASE WHEN sb.id IS NOT NULL THEN true ELSE false END as is_bookmarked
                 FROM sight s
                 LEFT JOIN docent d ON d.content_id = s.content_id
+                LEFT JOIN sight_bookmark sb ON sb.content_id = s.content_id AND sb.member_id = :memberId
                 WHERE s.content_id = :contentId
             """, nativeQuery = true)
     SightDetailItemDto findByContentId(
             @Param("contentId") String contentId,
             @Param("longitude") Double longitude,
-            @Param("latitude") Double latitude
+            @Param("latitude") Double latitude,
+            @Param("memberId") Long memberId
     );
+
+    @Query(value = """
+            SELECT 
+            s.content_id, s.title, s.addr3, s.origin_img_url, s.map_y, s.map_x, d.docent_url, s.cat1
+            FROM sight s
+            LEFT JOIN docent d ON d.content_id = s.content_id
+            WHERE s.content_id IN :ids
+            """, nativeQuery = true)
+    List<SightMetaDto> findByContentId(@Param("ids") List<String> ids);
 }

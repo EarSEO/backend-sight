@@ -16,6 +16,7 @@ public record SightDetailItemDto(
         String parking,
         String usefee,
         Double distance,
-        String docentUrl
+        String docentUrl,
+        boolean isBookmarked
 ) {
 }
