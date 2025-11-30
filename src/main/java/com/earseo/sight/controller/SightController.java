@@ -19,10 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
@@ -295,6 +292,12 @@ public class SightController {
             @NotBlank(message = "ID는 필수입니다")
             String id,
 
+            @Parameter(
+                    description = "중심점 경도",
+                    required = true,
+                    example = "126.9780",
+                    schema = @Schema(minimum = "124", maximum = "133")
+            )
             @RequestParam
             @NotNull(message = "경도는 필수입니다")
             @DecimalMin(value = "124", message = "경도는 124 이상이어야 합니다")
@@ -311,8 +314,15 @@ public class SightController {
             @NotNull(message = "위도는 필수입니다")
             @DecimalMin(value = "33.0", message = "위도는 33 이상이어야 합니다")
             @DecimalMax(value = "39", message = "위도는 39 이하여야 합니다")
-            Double latitude
+            Double latitude,
+
+            @Parameter(
+                    description = "사용자 ID",
+                    example = "1"
+            )
+            @RequestHeader(value = "X-USER-ID", required = false)
+            Long memberId
     ) {
-        return ResponseEntity.ok(BaseResponse.ok(sightService.getSightDetailInfo(id, longitude, latitude)));
+        return ResponseEntity.ok(BaseResponse.ok(sightService.getSightDetailInfo(id, longitude, latitude, memberId)));
     }
 }

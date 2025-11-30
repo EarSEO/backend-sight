@@ -56,9 +56,9 @@ public class SightService {
         return new SightMapInfoList(sightInfos);
     }
 
-    public SightDetailInfoResponse getSightDetailInfo(String id, Double longitude, Double latitude) {
+    public SightDetailInfoResponse getSightDetailInfo(String id, Double longitude, Double latitude, Long memberId) {
 
-        SightDetailItemDto dto =  sightRepository.findByContentId(id, longitude, latitude);
+        SightDetailItemDto dto =  sightRepository.findByContentId(id, longitude, latitude, memberId);
 
         if (dto == null) {
             throw new BaseException(SightError.SIGHT_NOT_FOUND);

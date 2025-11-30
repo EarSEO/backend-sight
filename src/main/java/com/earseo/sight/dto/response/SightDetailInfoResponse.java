@@ -50,8 +50,10 @@ public record SightDetailInfoResponse(
         Double distance,
 
         @Schema(description = "도슨트(오디오 가이드) URL", example = "https://example.com/docent/126508.mp3")
-        String docentUrl
+        String docentUrl,
 
+        @Schema(description = "북마크 여부", example = "true")
+        boolean isBookmarked
         ) {
     public static SightDetailInfoResponse toDto(SightDetailItemDto dto) {
         return new SightDetailInfoResponse(
@@ -70,7 +72,8 @@ public record SightDetailInfoResponse(
                 dto.parking(),
                 dto.usefee(),
                 Math.round(dto.distance()/1000 * 10.0) / 10.0,
-                dto.docentUrl()
+                dto.docentUrl(),
+                dto.isBookmarked()
         );
     }
 }

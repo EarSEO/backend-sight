@@ -1,5 +1,6 @@
 package com.earseo.sight.repository;
 
+import com.earseo.sight.dto.internal.SightMetaResponse;
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import com.earseo.sight.dto.projection.SightMapItemDto;
 import com.earseo.sight.entity.Sight;
@@ -48,14 +49,17 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
                     s.geom::geography,
                     ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
                 ) as distance,
-                d.docent_url
+                d.docent_url,
+                CASE WHEN sb.id IS NOT NULL THEN true ELSE false END as is_bookmarked
                 FROM sight s
                 LEFT JOIN docent d ON d.content_id = s.content_id
+                LEFT JOIN sight_bookmark sb ON sb.content_id = s.content_id AND sb.member_id = :memberId
                 WHERE s.content_id = :contentId
             """, nativeQuery = true)
     SightDetailItemDto findByContentId(
             @Param("contentId") String contentId,
             @Param("longitude") Double longitude,
-            @Param("latitude") Double latitude
+            @Param("latitude") Double latitude,
+            @Param("memberId") Long memberId
     );
 }
