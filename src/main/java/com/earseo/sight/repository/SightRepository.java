@@ -1,8 +1,8 @@
 package com.earseo.sight.repository;
 
-import com.earseo.sight.dto.internal.SightMetaResponse;
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import com.earseo.sight.dto.projection.SightMapItemDto;
+import com.earseo.sight.dto.projection.SightMetaDto;
 import com.earseo.sight.entity.Sight;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,13 +13,13 @@ import java.util.List;
 public interface SightRepository extends JpaRepository<Sight, Long> {
 
     @Query(value = """
-        SELECT s.content_id, s.title, s.map_x, s.map_y
-        FROM sight s
-        WHERE ST_Intersects(
-            s.geom,
-            ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)
-        )
-        """, nativeQuery = true)
+            SELECT s.content_id, s.title, s.map_x, s.map_y
+            FROM sight s
+            WHERE ST_Intersects(
+                s.geom,
+                ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)
+            )
+            """, nativeQuery = true)
     List<SightMapItemDto> findByRectangle(
             @Param("minLongitude") Double minLongitude,
             @Param("minLatitude") Double minLatitude,
@@ -62,4 +62,13 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
             @Param("latitude") Double latitude,
             @Param("memberId") Long memberId
     );
+
+    @Query(value = """
+            SELECT 
+            s.content_id, s.title, s.addr3, s.origin_img_url, s.map_y, s.map_x, d.docent_url, s.cat1
+            FROM sight s
+            LEFT JOIN docent d ON d.content_id = s.content_id
+            WHERE s.content_id IN :ids
+            """, nativeQuery = true)
+    List<SightMetaDto> findByContentId(@Param("ids") List<String> ids);
 }
