@@ -1,10 +1,7 @@
 package com.earseo.sight.controller;
 
 import com.earseo.sight.common.BaseResponse;
-import com.earseo.sight.dto.response.CurationList;
-import com.earseo.sight.dto.response.DocentResponse;
-import com.earseo.sight.dto.response.SightDetailInfoResponse;
-import com.earseo.sight.dto.response.SightMapInfoList;
+import com.earseo.sight.dto.response.*;
 import com.earseo.sight.service.CurationService;
 import com.earseo.sight.service.SightService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -375,5 +372,74 @@ public class SightController {
     @GetMapping("/curation")
     public ResponseEntity<BaseResponse<CurationList>> getCurationList() {
         return ResponseEntity.ok(BaseResponse.ok(curationService.getCurationList()));
+    }
+
+    @Operation(
+            summary = "큐레이션에 포함된 관광지 목록 조회",
+            description = "지정된 큐레이션 ID에 포함된 관광지들을 중심점(위도/경도) 기준 거리순으로 반환합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = CurationSightList.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "파라미터 오류"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "큐레이션을 찾을 수 없음",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                                "status": "CURATION_NOT_FOUND",
+                                                "message": "큐레이션이 존재하지 않습니다.",
+                                                "data": null
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    @GetMapping("/curation/{curationId}")
+    public ResponseEntity<BaseResponse<CurationSightList>> getCurationSight(
+            @Parameter(
+                    description = "큐레이션 ID",
+                    required = true,
+                    example = "1"
+            )
+            @PathVariable
+            Long curationId,
+            @Parameter(
+                    description = "중심점 경도",
+                    required = true,
+                    example = "126.9780",
+                    schema = @Schema(minimum = "124", maximum = "133")
+            )
+            @RequestParam
+            @NotNull(message = "경도는 필수입니다")
+            @DecimalMin(value = "124", message = "경도는 124 이상이어야 합니다")
+            @DecimalMax(value = "133", message = "경도는 133 이하여야 합니다")
+            Double longitude,
+
+            @Parameter(
+                    description = "중심점 위도",
+                    required = true,
+                    example = "37.5665",
+                    schema = @Schema(minimum = "33.0", maximum = "39")
+            )
+            @RequestParam
+            @NotNull(message = "위도는 필수입니다")
+            @DecimalMin(value = "33.0", message = "위도는 33 이상이어야 합니다")
+            @DecimalMax(value = "39", message = "위도는 39 이하여야 합니다")
+            Double latitude
+    ) {
+        return ResponseEntity.ok(BaseResponse.ok(curationService.getCurationSight(curationId, longitude, latitude)));
     }
 }

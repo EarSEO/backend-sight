@@ -1,5 +1,6 @@
 package com.earseo.sight.repository;
 
+import com.earseo.sight.dto.projection.CurationSightItemDto;
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import com.earseo.sight.dto.projection.SightMapItemDto;
 import com.earseo.sight.dto.projection.SightMetaDto;
@@ -71,4 +72,22 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
             WHERE s.content_id IN :ids
             """, nativeQuery = true)
     List<SightMetaDto> findByContentId(@Param("ids") List<String> ids);
+
+    @Query(value = """
+            SELECT s.content_id, s.title, s.cat2,
+            ST_Distance(
+                s.geom::geography,
+                ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
+            ) as distance,
+            s.addr3
+            FROM sight s
+            JOIN curation_sight cs ON cs.sight_content_id = s.content_id
+            WHERE cs.curation_id = :curationId
+            ORDER BY cs.id
+            """, nativeQuery = true)
+    List<CurationSightItemDto> findByCurationId(
+            @Param("curationId") Long curationId,
+            @Param("longitude") Double longitude,
+            @Param("latitude") Double latitude
+    );
 }
