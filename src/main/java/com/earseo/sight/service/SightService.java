@@ -5,9 +5,12 @@ import com.earseo.sight.common.exception.BaseException;
 import com.earseo.sight.common.exception.SightError;
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import com.earseo.sight.dto.projection.SightMapItemDto;
+import com.earseo.sight.dto.response.DocentResponse;
 import com.earseo.sight.dto.response.SightDetailInfoResponse;
 import com.earseo.sight.dto.response.SightInfoResponse;
 import com.earseo.sight.dto.response.SightMapInfoList;
+import com.earseo.sight.entity.Docent;
+import com.earseo.sight.repository.DocentRepository;
 import com.earseo.sight.repository.SightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ public class SightService {
     private static final int GEOHASH_PRECISION = 9;
 
     private final SightRepository sightRepository;
+    private final DocentRepository docentRepository;
 
     public SightMapInfoList getMapRectangle(Double minLongitude, Double minLatitude, Double maxLongitude, Double maxLatitude) {
         if (minLongitude >= maxLongitude || minLatitude >= maxLatitude) {
@@ -65,6 +69,14 @@ public class SightService {
         }
 
         return SightDetailInfoResponse.toDto(dto);
+    }
+
+    public DocentResponse getDocent(String sightId) {
+        Docent docent = docentRepository.findByContentId((sightId));
+        if (docent == null) {
+            return new DocentResponse(null, null);
+        }
+        return new DocentResponse(docent.getScript(), docent.getDocentUrl());
     }
 
     private static String getGeoHash(double longitude, double latitude) {

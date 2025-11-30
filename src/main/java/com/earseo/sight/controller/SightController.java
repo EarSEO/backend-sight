@@ -1,6 +1,7 @@
 package com.earseo.sight.controller;
 
 import com.earseo.sight.common.BaseResponse;
+import com.earseo.sight.dto.response.DocentResponse;
 import com.earseo.sight.dto.response.SightDetailInfoResponse;
 import com.earseo.sight.dto.response.SightMapInfoList;
 import com.earseo.sight.service.SightService;
@@ -324,5 +325,33 @@ public class SightController {
             Long memberId
     ) {
         return ResponseEntity.ok(BaseResponse.ok(sightService.getSightDetailInfo(id, longitude, latitude, memberId)));
+    }
+
+    @Operation(
+            summary = "도슨트 정보 조회",
+            description = "관광지 ID로 해당 관광지의 도슨트 정보를 조회합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = DocentResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청 (유효하지 않은 sightId)"
+            )
+    })
+    @GetMapping("/docent")
+    public ResponseEntity<BaseResponse<DocentResponse>> getDocent(
+            @Parameter(
+                    description = "관광지 ID",
+                    required = true,
+                    example = "123432"
+            )
+            @RequestParam
+            String sightId
+    ) {
+        return ResponseEntity.ok(BaseResponse.ok(sightService.getDocent(sightId)));
     }
 }
