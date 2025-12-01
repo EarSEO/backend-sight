@@ -4,6 +4,7 @@ import com.earseo.sight.common.exception.BaseException;
 import com.earseo.sight.common.exception.SightError;
 import com.earseo.sight.dto.projection.CurationSightItemDto;
 import com.earseo.sight.dto.request.CurationCreateRequest;
+import com.earseo.sight.dto.request.CurationUpdateRequest;
 import com.earseo.sight.dto.response.*;
 import com.earseo.sight.entity.Curation;
 import com.earseo.sight.entity.CurationSight;
@@ -87,6 +88,26 @@ public class CurationService {
                 .toList();
 
         curationSightRepository.saveAll(curationSights);
+
+        return new CurationResponse(
+                curation.getId(),
+                curation.getTitle(),
+                curation.getDescription(),
+                curation.getCurationImgUrl()
+        );
+    }
+
+    @Transactional
+    public CurationResponse updateCuration(Long curationId, CurationUpdateRequest request) {
+
+        Curation curation = curationRepository.findById(curationId)
+                .orElseThrow(() -> new BaseException(SightError.CURATION_NOT_FOUND));
+
+        curation.update(
+                request.title(),
+                request.description(),
+                request.curationImgUrl()
+        );
 
         return new CurationResponse(
                 curation.getId(),

@@ -25,4 +25,16 @@ public class Curation {
 
     @Column(name = "curation_img_url", nullable = false)
     private String curationImgUrl;
+
+    public void update(String title, String description, String curationImgUrl) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (description != null && !description.isBlank()) {
+            this.description = description;
+        }
+        if (curationImgUrl != null && !curationImgUrl.isBlank()) {
+            this.curationImgUrl = curationImgUrl;
+        }
+    }
 }
