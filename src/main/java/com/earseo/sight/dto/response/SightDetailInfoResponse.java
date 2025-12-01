@@ -9,8 +9,11 @@ public record SightDetailInfoResponse(
         @Schema(description = "관광지 고유 ID", example = "126508")
         String id,
 
-        @Schema(description = "관광지 테마 (예: 문화시설, 자연관광지 등)", example = "인문")
+        @Schema(description = "관광지 대분류", example = "인문(문화/예술/역사)")
         String theme,
+
+        @Schema(description = "관광지 중분류", example = "체험관광지")
+        String detailTheme,
 
         @Schema(description = "관광지 개요/설명", example = "조선시대 왕궁으로 500년 역사를 간직하고 있습니다")
         String outl,
@@ -59,11 +62,12 @@ public record SightDetailInfoResponse(
 
         @Schema(description = "관광지가 포함된 큐레이션 목록")
         List<CurationResponse> curationList
-        ) {
+) {
     public static SightDetailInfoResponse toDto(SightDetailItemDto dto, List<CurationResponse> curationList) {
         return new SightDetailInfoResponse(
                 dto.contentId(),
                 dto.cat1(),
+                dto.cat2(),
                 dto.outl(),
                 dto.title(),
                 dto.addr1(),
@@ -76,7 +80,7 @@ public record SightDetailInfoResponse(
                 dto.restdate(),
                 dto.parking(),
                 dto.usefee(),
-                Math.round(dto.distance()/1000 * 10.0) / 10.0,
+                dto.distance(),
                 dto.docentUrl(),
                 dto.isBookmarked(),
                 curationList

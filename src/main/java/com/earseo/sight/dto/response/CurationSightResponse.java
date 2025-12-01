@@ -24,7 +24,7 @@ public record CurationSightResponse(
                 dto.contentId(),
                 dto.title(),
                 dto.cat2(),
-                Math.round(dto.distance()/1000 * 10.0) / 10.0,
+                dto.distance(),
                 dto.addr3()
         );
     }
