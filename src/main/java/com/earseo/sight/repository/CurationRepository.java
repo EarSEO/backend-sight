@@ -13,4 +13,13 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     List<Curation> findRandomCurations(
             @Param("curationListSize") Integer curationListSize
     );
+
+    @Query(value = """
+            SELECT * FROM curation c
+            JOIN curation_sight cs ON c.id = cs.curation_id
+            WHERE cs.sight_content_id = :contentId
+            """, nativeQuery = true)
+    List<Curation> findAllBySightContentId(
+            @Param("contentId") String contentId
+    );
 }

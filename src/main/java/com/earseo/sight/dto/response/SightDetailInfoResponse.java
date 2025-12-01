@@ -3,6 +3,8 @@ package com.earseo.sight.dto.response;
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
+
 public record SightDetailInfoResponse(
         @Schema(description = "관광지 고유 ID", example = "126508")
         String id,
@@ -53,9 +55,12 @@ public record SightDetailInfoResponse(
         String docentUrl,
 
         @Schema(description = "북마크 여부", example = "true")
-        boolean isBookmarked
+        boolean isBookmarked,
+
+        @Schema(description = "관광지가 포함된 큐레이션 목록")
+        List<CurationResponse> curationList
         ) {
-    public static SightDetailInfoResponse toDto(SightDetailItemDto dto) {
+    public static SightDetailInfoResponse toDto(SightDetailItemDto dto, List<CurationResponse> curationList) {
         return new SightDetailInfoResponse(
                 dto.contentId(),
                 dto.cat1(),
@@ -73,7 +78,8 @@ public record SightDetailInfoResponse(
                 dto.usefee(),
                 Math.round(dto.distance()/1000 * 10.0) / 10.0,
                 dto.docentUrl(),
-                dto.isBookmarked()
+                dto.isBookmarked(),
+                curationList
         );
     }
 }

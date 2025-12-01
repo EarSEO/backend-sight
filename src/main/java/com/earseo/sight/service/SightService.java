@@ -5,11 +5,10 @@ import com.earseo.sight.common.exception.BaseException;
 import com.earseo.sight.common.exception.SightError;
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import com.earseo.sight.dto.projection.SightMapItemDto;
-import com.earseo.sight.dto.response.DocentResponse;
-import com.earseo.sight.dto.response.SightDetailInfoResponse;
-import com.earseo.sight.dto.response.SightInfoResponse;
-import com.earseo.sight.dto.response.SightMapInfoList;
+import com.earseo.sight.dto.response.*;
+import com.earseo.sight.entity.Curation;
 import com.earseo.sight.entity.Docent;
+import com.earseo.sight.repository.CurationRepository;
 import com.earseo.sight.repository.DocentRepository;
 import com.earseo.sight.repository.SightRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ public class SightService {
 
     private final SightRepository sightRepository;
     private final DocentRepository docentRepository;
+    private final CurationRepository curationRepository;
 
     public SightMapInfoList getMapRectangle(Double minLongitude, Double minLatitude, Double maxLongitude, Double maxLatitude) {
         if (minLongitude >= maxLongitude || minLatitude >= maxLatitude) {
@@ -68,7 +68,20 @@ public class SightService {
             throw new BaseException(SightError.SIGHT_NOT_FOUND);
         }
 
-        return SightDetailInfoResponse.toDto(dto);
+
+        List<Curation> curations = curationRepository.findAllBySightContentId(id);
+        List<CurationResponse> curationResponses = curations.stream()
+                .map(
+                        item -> new CurationResponse(
+                                item.getId(),
+                                item.getTitle(),
+                                item.getDescription(),
+                                item.getCurationImgUrl()
+                        )
+                )
+                .toList();
+
+        return SightDetailInfoResponse.toDto(dto, curationResponses);
     }
 
     public DocentResponse getDocent(String sightId) {
