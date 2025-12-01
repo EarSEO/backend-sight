@@ -15,7 +15,7 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     );
 
     @Query(value = """
-            SELECT * FROM curation c
+            SELECT c.id, c.title, c.description, c.curation_img_url FROM curation c
             JOIN curation_sight cs ON c.id = cs.curation_id
             WHERE cs.sight_content_id = :contentId
             """, nativeQuery = true)
