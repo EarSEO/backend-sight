@@ -3,12 +3,16 @@ package com.earseo.sight.service;
 import com.earseo.sight.common.exception.BaseException;
 import com.earseo.sight.common.exception.SightError;
 import com.earseo.sight.dto.projection.CurationSightItemDto;
+import com.earseo.sight.dto.request.CurationCreateRequest;
 import com.earseo.sight.dto.response.CurationList;
 import com.earseo.sight.dto.response.CurationResponse;
 import com.earseo.sight.dto.response.CurationSightList;
 import com.earseo.sight.dto.response.CurationSightResponse;
 import com.earseo.sight.entity.Curation;
+import com.earseo.sight.entity.CurationSight;
+import com.earseo.sight.entity.Sight;
 import com.earseo.sight.repository.CurationRepository;
+import com.earseo.sight.repository.CurationSightRepository;
 import com.earseo.sight.repository.SightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ public class CurationService {
     private static final int CURATION_LIST_SIZE = 4;
 
     private final CurationRepository curationRepository;
+    private final CurationSightRepository curationSightRepository;
     private final SightRepository sightRepository;
 
     @Transactional(readOnly = true)
@@ -59,6 +64,38 @@ public class CurationService {
                 curation.getTitle(),
                 curation.getDescription(),
                 curationSightResponses
+        );
+    }
+
+    @Transactional
+    public CurationResponse createCuration(CurationCreateRequest request) {
+        List<Sight> sights = sightRepository.findAllByContentIdIn(request.contentIds());
+        if (sights.size() != request.contentIds().size()) {
+            throw new BaseException(SightError.SIGHT_NOT_FOUND);
+        }
+
+        Curation curation = Curation.builder()
+                .title(request.title())
+                .description(request.subtitle())
+                .curationImgUrl(request.curationImgUrl())
+                .build();
+
+        curationRepository.save(curation);
+
+        List<CurationSight> curationSights = request.contentIds().stream()
+                .map(sightId -> CurationSight.builder()
+                        .curationId(curation.getId())
+                        .sightContentId(sightId)
+                        .build())
+                .toList();
+
+        curationSightRepository.saveAll(curationSights);
+
+        return new CurationResponse(
+                curation.getId(),
+                curation.getTitle(),
+                curation.getDescription(),
+                curation.getCurationImgUrl()
         );
     }
 }

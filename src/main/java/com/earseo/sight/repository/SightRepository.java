@@ -90,4 +90,6 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
             @Param("longitude") Double longitude,
             @Param("latitude") Double latitude
     );
+
+    List<Sight> findAllByContentIdIn(List<String> sightIds);
 }
