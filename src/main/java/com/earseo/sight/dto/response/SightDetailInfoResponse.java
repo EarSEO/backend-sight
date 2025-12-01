@@ -62,7 +62,7 @@ public record SightDetailInfoResponse(
 
         @Schema(description = "관광지가 포함된 큐레이션 목록")
         List<CurationResponse> curationList
-        ) {
+) {
     public static SightDetailInfoResponse toDto(SightDetailItemDto dto, List<CurationResponse> curationList) {
         return new SightDetailInfoResponse(
                 dto.contentId(),
@@ -80,7 +80,7 @@ public record SightDetailInfoResponse(
                 dto.restdate(),
                 dto.parking(),
                 dto.usefee(),
-                Math.round(dto.distance()/1000 * 10.0) / 10.0,
+                dto.distance(),
                 dto.docentUrl(),
                 dto.isBookmarked(),
                 curationList

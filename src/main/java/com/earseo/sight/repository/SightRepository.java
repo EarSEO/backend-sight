@@ -1,9 +1,6 @@
 package com.earseo.sight.repository;
 
-import com.earseo.sight.dto.projection.CurationSightItemDto;
-import com.earseo.sight.dto.projection.SightDetailItemDto;
-import com.earseo.sight.dto.projection.SightMapItemDto;
-import com.earseo.sight.dto.projection.SightMetaDto;
+import com.earseo.sight.dto.projection.*;
 import com.earseo.sight.entity.Sight;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -92,4 +89,33 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
     );
 
     List<Sight> findAllByContentIdIn(List<String> sightIds);
+
+
+    @Query(value = """
+            SELECT s.content_id, s.title, s.cat2, s.addr3, s.map_x, s.map_y,
+            ST_Distance(
+                s.geom::geography,
+                ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
+            ) as distance
+            FROM sight s
+            WHERE ST_Intersects(
+                s.geom,
+                ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)
+            ) AND
+            :keyword IS NULL OR
+            :keyword = '' OR
+            s.title ILIKE '%' || :keyword || '%'
+            ORDER BY distance
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<SearchSightItemDto> findByKeywordAndRectangle(
+            @Param("keyword") String keyword,
+            @Param("longitude") Double longitude,
+            @Param("latitude") Double latitude,
+            @Param("minLongitude") Double minLongitude,
+            @Param("minLatitude") Double minLatitude,
+            @Param("maxLongitude") Double maxLongitude,
+            @Param("maxLatitude") Double maxLatitude,
+            @Param("limit") Integer limit
+    );
 }

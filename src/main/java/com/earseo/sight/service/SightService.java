@@ -3,6 +3,7 @@ package com.earseo.sight.service;
 import ch.hsr.geohash.GeoHash;
 import com.earseo.sight.common.exception.BaseException;
 import com.earseo.sight.common.exception.SightError;
+import com.earseo.sight.dto.projection.SearchSightItemDto;
 import com.earseo.sight.dto.projection.SightDetailItemDto;
 import com.earseo.sight.dto.projection.SightMapItemDto;
 import com.earseo.sight.dto.response.*;
@@ -62,7 +63,7 @@ public class SightService {
 
     public SightDetailInfoResponse getSightDetailInfo(String id, Double longitude, Double latitude, Long memberId) {
 
-        SightDetailItemDto dto =  sightRepository.findByContentId(id, longitude, latitude, memberId);
+        SightDetailItemDto dto = sightRepository.findByContentId(id, longitude, latitude, memberId);
 
         if (dto == null) {
             throw new BaseException(SightError.SIGHT_NOT_FOUND);
@@ -90,6 +91,22 @@ public class SightService {
             return new DocentResponse(null, null);
         }
         return new DocentResponse(docent.getScript(), docent.getDocentUrl());
+    }
+
+    public SearchSightList searchSight(
+            String keyword, Double longitude, Double latitude,
+            Double minLongitude, Double minLatitude,
+            Double maxLongitude, Double maxLatitude, Integer limit) {
+        if (minLongitude >= maxLongitude || minLatitude >= maxLatitude) {
+            throw new BaseException(SightError.INVALID_COORDINATE_RANGE);
+        }
+
+        List<SearchSightItemDto> sights = sightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit);
+        List<SearchSightResponse> sightResponses = sights.stream()
+                .map(SearchSightResponse::toDto)
+                .toList();
+
+        return new SearchSightList(keyword, sightResponses);
     }
 
     private static String getGeoHash(double longitude, double latitude) {
