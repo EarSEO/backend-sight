@@ -31,7 +31,7 @@ public class InitService {
     @Transactional
     public void initSight() {
         RestClient client = RestClient.create();
-        String cdnUrl = "https://cdn.earseo.click/core/master/master_data.json";
+        String cdnUrl = "https://cdn.earseo.click/core/master/master_data_.json";
 
         try {
             JsonNode jsonContent = client.get()
