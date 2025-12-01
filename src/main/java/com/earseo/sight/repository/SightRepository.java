@@ -44,7 +44,7 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
     );
 
     @Query(value = """
-                SELECT s.content_id, s.ocat1, s.cat2, s.outl, s.title, s.addr1, s.addr3, s.map_x, s.map_y,
+                SELECT s.content_id, s.cat1, s.cat2, s.outl, s.title, s.addr1, s.addr3, s.map_x, s.map_y,
                 s.tel, s.origin_img_url, s.use_time, s.rest_date, s.parking, s.use_fee,
                 ST_Distance(
                     s.geom::geography,
