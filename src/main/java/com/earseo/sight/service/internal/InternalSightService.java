@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +22,14 @@ public class InternalSightService {
     public List<SightMetaResponse> getSightByIds(List<String> ids) {
         List<SightMetaDto> dtos = sightRepository.findByContentId(ids);
 
+        Map<String, Integer> orderMap = new HashMap<>();
+        for (int i = 0; i < ids.size(); i++) {
+            orderMap.put(ids.get(i), i);
+        }
+
         return dtos.stream()
-                .map(
-                        SightMetaResponse::toDto
-                )
+                .sorted(Comparator.comparingInt(dto -> orderMap.get(dto.contentId())))
+                .map(SightMetaResponse::toDto)
                 .toList();
     }
 }
