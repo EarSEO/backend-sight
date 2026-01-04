@@ -1,6 +1,8 @@
 package com.earseo.sight.dto.response;
 
 import com.earseo.sight.dto.projection.SightDetailItemDto;
+import com.earseo.sight.entity.SubTheme;
+import com.earseo.sight.entity.Theme;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -9,11 +11,11 @@ public record SightDetailInfoResponse(
         @Schema(description = "관광지 고유 ID", example = "126508")
         String id,
 
-        @Schema(description = "관광지 대분류", example = "인문(문화/예술/역사)")
-        String theme,
+        @Schema(description = "관광지 분류 (코드)", example = "CU")
+        Theme theme,
 
-        @Schema(description = "관광지 중분류", example = "체험관광지")
-        String detailTheme,
+        @Schema(description = "관광지 하위 분류 (코드)", example = "CU01")
+        SubTheme subTheme,
 
         @Schema(description = "관광지 개요/설명", example = "조선시대 왕궁으로 500년 역사를 간직하고 있습니다")
         String outl,
@@ -66,8 +68,8 @@ public record SightDetailInfoResponse(
     public static SightDetailInfoResponse toDto(SightDetailItemDto dto, List<CurationResponse> curationList) {
         return new SightDetailInfoResponse(
                 dto.contentId(),
-                dto.cat1(),
-                dto.cat2(),
+                Theme.valueOf(dto.cat1()),
+                SubTheme.valueOf(dto.cat2()),
                 dto.outl(),
                 dto.title(),
                 dto.addr1(),

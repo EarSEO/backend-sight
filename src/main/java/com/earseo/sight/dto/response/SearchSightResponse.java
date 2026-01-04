@@ -1,6 +1,7 @@
 package com.earseo.sight.dto.response;
 
 import com.earseo.sight.dto.projection.SearchSightItemDto;
+import com.earseo.sight.entity.SubTheme;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record SearchSightResponse(
@@ -10,8 +11,8 @@ public record SearchSightResponse(
         @Schema(description = "관광지 이름", example = "경복궁")
         String title,
 
-        @Schema(description = "관광지 중분류", example = "체험관광지")
-        String detailTheme,
+        @Schema(description = "관광지 하위 분류 (코드)", example = "체험관광지")
+        SubTheme subTheme,
 
         @Schema(description = "주소 요약 (구/동 단위)", example = "서울 종로구")
         String address,
@@ -29,7 +30,7 @@ public record SearchSightResponse(
         return new SearchSightResponse(
                 dto.contentId(),
                 dto.title(),
-                dto.cat2(),
+                SubTheme.valueOf(dto.cat2()),
                 dto.addr3(),
                 dto.mapX(),
                 dto.mapY(),

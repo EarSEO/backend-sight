@@ -1,6 +1,7 @@
 package com.earseo.sight.dto.internal;
 
 import com.earseo.sight.dto.projection.SightMetaDto;
+import com.earseo.sight.entity.Theme;
 
 public record SightMetaResponse(
         String id,
@@ -10,7 +11,7 @@ public record SightMetaResponse(
         Double latitude,
         Double longitude,
         String docentUrl,
-        String theme
+        Theme theme
 ) {
     public static SightMetaResponse toDto(SightMetaDto dto) {
         return new SightMetaResponse(
@@ -21,7 +22,7 @@ public record SightMetaResponse(
                 dto.mapY(),
                 dto.mapX(),
                 dto.docentUrl(),
-                dto.cat1()
+                Theme.valueOf(dto.cat1())
         );
     }
 }

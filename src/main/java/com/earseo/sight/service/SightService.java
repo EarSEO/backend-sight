@@ -9,6 +9,7 @@ import com.earseo.sight.dto.projection.SightMapItemDto;
 import com.earseo.sight.dto.response.*;
 import com.earseo.sight.entity.Curation;
 import com.earseo.sight.entity.Docent;
+import com.earseo.sight.entity.Theme;
 import com.earseo.sight.repository.CurationRepository;
 import com.earseo.sight.repository.DocentRepository;
 import com.earseo.sight.repository.SightRepository;
@@ -39,6 +40,7 @@ public class SightService {
                         item.title(),
                         item.mapX(),
                         item.mapY(),
+                        Theme.valueOf(item.cat1()),
                         getGeoHash(item.mapX(), item.mapY()))
         ).toList();
 
@@ -55,6 +57,7 @@ public class SightService {
                         item.title(),
                         item.mapX(),
                         item.mapY(),
+                        Theme.valueOf(item.cat1()),
                         getGeoHash(item.mapX(), item.mapY()))
         ).toList();
 

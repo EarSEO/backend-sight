@@ -4,6 +4,8 @@ import com.earseo.sight.dto.etl.DocentItemDto;
 import com.earseo.sight.dto.etl.SightItemDto;
 import com.earseo.sight.entity.Docent;
 import com.earseo.sight.entity.Sight;
+import com.earseo.sight.entity.SubTheme;
+import com.earseo.sight.entity.Theme;
 import com.earseo.sight.repository.DocentRepository;
 import com.earseo.sight.repository.SightRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -91,8 +93,8 @@ public class InitService {
         return Sight.builder().
                 contentId(dto.contentId())
                 .contentTypeId(dto.contentTypeId())
-                .cat1(dto.cat1())
-                .cat2(dto.cat2())
+                .cat1(Theme.valueOf(dto.cat1()))
+                .cat2(SubTheme.valueOf(dto.cat2()))
                 .cat3(dto.cat3())
                 .ocat1(dto.ocat1())
                 .ocat2(dto.ocat2())
