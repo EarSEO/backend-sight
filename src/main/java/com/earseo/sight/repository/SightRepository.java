@@ -11,7 +11,7 @@ import java.util.List;
 public interface SightRepository extends JpaRepository<Sight, Long> {
 
     @Query(value = """
-            SELECT s.content_id, s.title, s.map_x, s.map_y
+            SELECT s.content_id, s.title, s.map_x, s.map_y, s.cat1
             FROM sight s
             WHERE ST_Intersects(
                 s.geom,
@@ -26,7 +26,7 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
     );
 
     @Query(value = """
-            SELECT s.content_id, s.title, s.map_x, s.map_y
+            SELECT s.content_id, s.title, s.map_x, s.map_y, s.cat1
             FROM sight s
             WHERE ST_DWithin(
                 s.geom::geography,

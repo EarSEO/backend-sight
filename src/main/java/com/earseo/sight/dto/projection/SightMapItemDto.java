@@ -4,6 +4,7 @@ public record SightMapItemDto(
         String contentId,
         String title,
         Double mapX,
-        Double mapY
+        Double mapY,
+        String cat1
 ) {
 }

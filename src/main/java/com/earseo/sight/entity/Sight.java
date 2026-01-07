@@ -23,11 +23,13 @@ public class Sight {
     @Column(name = "content_type_id")
     private String contentTypeId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "cat1")
-    private String cat1;
+    private Theme cat1;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "cat2")
-    private String cat2;
+    private SubTheme cat2;
 
     @Column(name = "cat3")
     private String cat3;
