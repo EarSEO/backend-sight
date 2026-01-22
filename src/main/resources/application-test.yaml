@@ -57,6 +57,13 @@ management:
   tracing:
     enabled: false
 
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    cloudfront:
+      domain: ${AWS_CLOUDFRONT_DOMAIN:cdn.example.com}
+
 logging:
   level:
     org.hibernate.SQL: ${LOGGING_LEVEL_ORG_HIBERNATE_SQL:debug}
