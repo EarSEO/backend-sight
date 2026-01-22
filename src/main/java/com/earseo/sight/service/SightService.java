@@ -12,7 +12,8 @@ import com.earseo.sight.entity.Docent;
 import com.earseo.sight.entity.Theme;
 import com.earseo.sight.repository.CurationRepository;
 import com.earseo.sight.repository.DocentRepository;
-import com.earseo.sight.repository.SightRepository;
+import com.earseo.sight.repository.EnSightRepository;
+import com.earseo.sight.repository.KoSightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +24,22 @@ import java.util.List;
 public class SightService {
     private static final int GEOHASH_PRECISION = 9;
 
-    private final SightRepository sightRepository;
+    private final KoSightRepository koSightRepository;
+    private final EnSightRepository enSightRepository;
     private final DocentRepository docentRepository;
     private final CurationRepository curationRepository;
 
-    public SightMapInfoList getMapRectangle(Double minLongitude, Double minLatitude, Double maxLongitude, Double maxLatitude) {
+    public SightMapInfoList getMapRectangle(Double minLongitude, Double minLatitude, Double maxLongitude, Double maxLatitude, String lang) {
         if (minLongitude >= maxLongitude || minLatitude >= maxLatitude) {
             throw new BaseException(SightError.INVALID_COORDINATE_RANGE);
         }
 
-        List<SightMapItemDto> sights = sightRepository.findByRectangle(minLongitude, minLatitude, maxLongitude, maxLatitude);
+        List<SightMapItemDto> sights;
+        if (lang.equals("en")) {
+            sights = enSightRepository.findByRectangle(minLongitude, minLatitude, maxLongitude, maxLatitude);
+        } else {
+            sights = koSightRepository.findByRectangle(minLongitude, minLatitude, maxLongitude, maxLatitude);
+        }
 
         List<SightInfoResponse> sightInfos = sights.stream().map(
                 item -> new SightInfoResponse(
@@ -40,16 +47,21 @@ public class SightService {
                         item.title(),
                         item.mapX(),
                         item.mapY(),
-                        Theme.valueOf(item.cat1()),
+                        Theme.valueOf(item.theme()),
                         getGeoHash(item.mapX(), item.mapY()))
         ).toList();
 
         return new SightMapInfoList(sightInfos);
     }
 
-    public SightMapInfoList getMapCircle(Double meters, Double longitude, Double latitude) {
+    public SightMapInfoList getMapCircle(Double meters, Double longitude, Double latitude, String lang) {
 
-        List<SightMapItemDto> sights = sightRepository.findByRadius(meters, longitude, latitude);
+        List<SightMapItemDto> sights;
+        if (lang.equals("en")) {
+            sights = enSightRepository.findByRadius(meters, longitude, latitude);
+        } else {
+            sights = koSightRepository.findByRadius(meters, longitude, latitude);
+        }
 
         List<SightInfoResponse> sightInfos = sights.stream().map(
                 item -> new SightInfoResponse(
@@ -57,21 +69,25 @@ public class SightService {
                         item.title(),
                         item.mapX(),
                         item.mapY(),
-                        Theme.valueOf(item.cat1()),
+                        Theme.valueOf(item.theme()),
                         getGeoHash(item.mapX(), item.mapY()))
         ).toList();
 
         return new SightMapInfoList(sightInfos);
     }
 
-    public SightDetailInfoResponse getSightDetailInfo(String id, Double longitude, Double latitude, Long memberId) {
+    public SightDetailInfoResponse getSightDetailInfo(String id, Double longitude, Double latitude, Long memberId, String lang) {
 
-        SightDetailItemDto dto = sightRepository.findByContentId(id, longitude, latitude, memberId);
+        SightDetailItemDto dto;
+        if (lang.equals("en")) {
+            dto = enSightRepository.findByContentId(id, longitude, latitude, memberId);
+        } else {
+            dto = koSightRepository.findByContentId(id, longitude, latitude, memberId);
+        }
 
         if (dto == null) {
             throw new BaseException(SightError.SIGHT_NOT_FOUND);
         }
-
 
         List<Curation> curations = curationRepository.findAllBySightContentId(id);
         List<CurationResponse> curationResponses = curations.stream()
@@ -99,12 +115,17 @@ public class SightService {
     public SearchSightList searchSight(
             String keyword, Double longitude, Double latitude,
             Double minLongitude, Double minLatitude,
-            Double maxLongitude, Double maxLatitude, Integer limit) {
+            Double maxLongitude, Double maxLatitude, Integer limit, String lang) {
         if (minLongitude >= maxLongitude || minLatitude >= maxLatitude) {
             throw new BaseException(SightError.INVALID_COORDINATE_RANGE);
         }
 
-        List<SearchSightItemDto> sights = sightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit);
+        List<SearchSightItemDto> sights;
+        if (lang.equals("en")) {
+            sights = enSightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit);
+        } else {
+            sights = koSightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit);
+        }
         List<SearchSightResponse> sightResponses = sights.stream()
                 .map(SearchSightResponse::toDto)
                 .toList();

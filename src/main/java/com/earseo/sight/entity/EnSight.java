@@ -1,0 +1,73 @@
+package com.earseo.sight.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "en_sight")
+public class EnSight {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "content_id", nullable = false, unique = true)
+    private String contentId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "theme")
+    private Theme theme;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sub_theme")
+    private SubTheme subTheme;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "addr1")
+    private String addr1;
+
+    @Column(name = "addr2")
+    private String addr2;
+
+    @Column(name = "addr3")
+    private String addr3;
+
+    @Column(name = "map_x")
+    private Double mapX;
+
+    @Column(name = "map_y")
+    private Double mapY;
+
+    @Column(name = "tel", columnDefinition = "TEXT")
+    private String tel;
+
+    @Column(name = "overview", columnDefinition = "TEXT")
+    private String overview;
+
+    @Column(name = "origin_img_url", columnDefinition = "TEXT")
+    private String originImgUrl;
+
+    @Column(name = "use_time", columnDefinition = "TEXT")
+    private String usetime;
+
+    @Column(name = "rest_date", columnDefinition = "TEXT")
+    private String restdate;
+
+    @Column(name = "parking", columnDefinition = "TEXT")
+    private String parking;
+
+    @Column(name = "use_fee", columnDefinition = "TEXT")
+    private String usefee;
+
+    @Column(name = "geom", columnDefinition = "geometry(Point,4326)")
+    private Point geom;
+}

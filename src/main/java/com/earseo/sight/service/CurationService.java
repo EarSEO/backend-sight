@@ -8,10 +8,10 @@ import com.earseo.sight.dto.request.CurationUpdateRequest;
 import com.earseo.sight.dto.response.*;
 import com.earseo.sight.entity.Curation;
 import com.earseo.sight.entity.CurationSight;
-import com.earseo.sight.entity.Sight;
+import com.earseo.sight.entity.KoSight;
 import com.earseo.sight.repository.CurationRepository;
 import com.earseo.sight.repository.CurationSightRepository;
-import com.earseo.sight.repository.SightRepository;
+import com.earseo.sight.repository.KoSightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,7 @@ public class CurationService {
 
     private final CurationRepository curationRepository;
     private final CurationSightRepository curationSightRepository;
-    private final SightRepository sightRepository;
+    private final KoSightRepository koSightRepository;
 
     @Transactional(readOnly = true)
     public CurationList getCurationList() {
@@ -53,7 +53,7 @@ public class CurationService {
                 () -> new BaseException(SightError.CURATION_NOT_FOUND)
         );
 
-        List<CurationSightItemDto> curationSights = sightRepository.findByCurationId(curationId, longitude, latitude);
+        List<CurationSightItemDto> curationSights = koSightRepository.findByCurationId(curationId, longitude, latitude);
         List<CurationSightResponse> curationSightResponses = curationSights.stream()
                 .map(CurationSightResponse::toDto)
                 .toList();
@@ -67,7 +67,7 @@ public class CurationService {
 
     @Transactional
     public CurationResponse createCuration(CurationCreateRequest request) {
-        List<Sight> sights = sightRepository.findAllByContentIdIn(request.contentIds());
+        List<KoSight> sights = koSightRepository.findAllByContentIdIn(request.contentIds());
         if (sights.size() != request.contentIds().size()) {
             throw new BaseException(SightError.SIGHT_NOT_FOUND);
         }

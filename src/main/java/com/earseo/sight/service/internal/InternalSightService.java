@@ -2,7 +2,7 @@ package com.earseo.sight.service.internal;
 
 import com.earseo.sight.dto.internal.SightMetaResponse;
 import com.earseo.sight.dto.projection.SightMetaDto;
-import com.earseo.sight.repository.SightRepository;
+import com.earseo.sight.repository.KoSightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +16,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class InternalSightService {
 
-    private final SightRepository sightRepository;
+    private final KoSightRepository koSightRepository;
 
     @Transactional(readOnly = true)
     public List<SightMetaResponse> getSightByIds(List<String> ids) {
-        List<SightMetaDto> dtos = sightRepository.findByContentId(ids);
+        List<SightMetaDto> dtos = koSightRepository.findByContentId(ids);
 
         Map<String, Integer> orderMap = new HashMap<>();
         for (int i = 0; i < ids.size(); i++) {

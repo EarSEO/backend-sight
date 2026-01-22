@@ -30,7 +30,7 @@ public record SearchSightResponse(
         return new SearchSightResponse(
                 dto.contentId(),
                 dto.title(),
-                SubTheme.valueOf(dto.cat2()),
+                SubTheme.valueOf(dto.subTheme()),
                 dto.addr3(),
                 dto.mapX(),
                 dto.mapY(),

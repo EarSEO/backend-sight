@@ -1,10 +1,14 @@
 package com.earseo.sight.service;
 
+import com.earseo.sight.common.exception.BaseException;
+import com.earseo.sight.common.exception.SightError;
 import com.earseo.sight.dto.response.BookmarkList;
 import com.earseo.sight.dto.response.BookmarkResponse;
 import com.earseo.sight.dto.response.BookmarkStatusResponse;
 import com.earseo.sight.entity.SightBookmark;
 import com.earseo.sight.repository.BookmarkRepository;
+import com.earseo.sight.repository.EnSightRepository;
+import com.earseo.sight.repository.KoSightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +19,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookmarkService {
 
+    private final KoSightRepository koSightRepository;
+    private final EnSightRepository enSightRepository;
     private final BookmarkRepository bookmarkRepository;
 
     @Transactional
-    public BookmarkStatusResponse addBookmark(Long memberId, String sightId) {
+    public BookmarkStatusResponse addBookmark(Long memberId, String sightId, String lang) {
+        boolean exists;
+        if (lang.equals("en")) {
+            exists = enSightRepository.existsByContentId(sightId);
+        } else {
+            exists = koSightRepository.existsByContentId(sightId);
+        }
+
+        if (!exists) {
+            throw new BaseException(SightError.SIGHT_NOT_FOUND);
+        }
         bookmarkRepository.insertBookmark(memberId, sightId);
         return new BookmarkStatusResponse(true, sightId);
     }

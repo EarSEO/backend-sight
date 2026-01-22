@@ -122,7 +122,7 @@ public class SightController {
             Double maxLatitude
     ) {
 
-        return ResponseEntity.ok(BaseResponse.ok(sightService.getMapRectangle(minLongitude, minLatitude, maxLongitude, maxLatitude)));
+        return ResponseEntity.ok(BaseResponse.ok(sightService.getMapRectangle(minLongitude, minLatitude, maxLongitude, maxLatitude, "ko")));
     }
 
 
@@ -217,7 +217,7 @@ public class SightController {
             @DecimalMax(value = "39", message = "위도는 39 이하여야 합니다")
             Double latitude
     ) {
-        return ResponseEntity.ok(BaseResponse.ok(sightService.getMapCircle(meters, longitude, latitude)));
+        return ResponseEntity.ok(BaseResponse.ok(sightService.getMapCircle(meters, longitude, latitude, "ko")));
     }
 
     @Operation(
@@ -321,7 +321,7 @@ public class SightController {
             @RequestHeader(value = "X-USER-ID", required = false)
             Long memberId
     ) {
-        return ResponseEntity.ok(BaseResponse.ok(sightService.getSightDetailInfo(id, longitude, latitude, memberId)));
+        return ResponseEntity.ok(BaseResponse.ok(sightService.getSightDetailInfo(id, longitude, latitude, memberId, "ko")));
     }
 
     @Operation(
@@ -591,7 +591,7 @@ public class SightController {
             Integer limit
     ) {
         return ResponseEntity.ok(BaseResponse.ok(
-                sightService.searchSight(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit)
+                sightService.searchSight(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit, "ko")
         ));
     }
 }

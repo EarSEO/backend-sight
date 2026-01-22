@@ -2,9 +2,9 @@ package com.earseo.sight.dto.projection;
 
 public record SightDetailItemDto(
         String contentId,
-        String cat1,
-        String cat2,
-        String outl,
+        String theme,
+        String subTheme,
+        String overview,
         String title,
         String addr1,
         String addr3,

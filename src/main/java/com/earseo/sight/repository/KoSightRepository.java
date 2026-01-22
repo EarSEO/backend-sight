@@ -1,18 +1,20 @@
 package com.earseo.sight.repository;
 
 import com.earseo.sight.dto.projection.*;
-import com.earseo.sight.entity.Sight;
+import com.earseo.sight.entity.KoSight;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface SightRepository extends JpaRepository<Sight, Long> {
+public interface KoSightRepository extends JpaRepository<KoSight, Long> {
+
+    boolean existsByContentId(String contentId);
 
     @Query(value = """
-            SELECT s.content_id, s.title, s.map_x, s.map_y, s.cat1
-            FROM sight s
+            SELECT s.content_id, s.title, s.map_x, s.map_y, s.theme
+            FROM ko_sight s
             WHERE ST_Intersects(
                 s.geom,
                 ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)
@@ -26,8 +28,8 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
     );
 
     @Query(value = """
-            SELECT s.content_id, s.title, s.map_x, s.map_y, s.cat1
-            FROM sight s
+            SELECT s.content_id, s.title, s.map_x, s.map_y, s.theme
+            FROM ko_sight s
             WHERE ST_DWithin(
                 s.geom::geography,
                 ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
@@ -41,7 +43,7 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
     );
 
     @Query(value = """
-                SELECT s.content_id, s.cat1, s.cat2, s.outl, s.title, s.addr1, s.addr3, s.map_x, s.map_y,
+                SELECT s.content_id, s.theme, s.sub_theme, s.overview, s.title, s.addr1, s.addr3, s.map_x, s.map_y,
                 s.tel, s.origin_img_url, s.use_time, s.rest_date, s.parking, s.use_fee,
                 ST_Distance(
                     s.geom::geography,
@@ -49,7 +51,7 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
                 ) as distance,
                 d.docent_url,
                 CASE WHEN sb.id IS NOT NULL THEN true ELSE false END as is_bookmarked
-                FROM sight s
+                FROM ko_sight s
                 LEFT JOIN docent d ON d.content_id = s.content_id
                 LEFT JOIN sight_bookmark sb ON sb.content_id = s.content_id AND sb.member_id = :memberId
                 WHERE s.content_id = :contentId
@@ -63,21 +65,21 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
 
     @Query(value = """
             SELECT 
-            s.content_id, s.title, s.addr3, s.origin_img_url, s.map_y, s.map_x, d.docent_url, s.cat1
-            FROM sight s
+            s.content_id, s.title, s.addr3, s.origin_img_url, s.map_y, s.map_x, d.docent_url, s.theme
+            FROM ko_sight s
             LEFT JOIN docent d ON d.content_id = s.content_id
             WHERE s.content_id IN :ids
             """, nativeQuery = true)
     List<SightMetaDto> findByContentId(@Param("ids") List<String> ids);
 
     @Query(value = """
-            SELECT s.content_id, s.title, s.cat2,
+            SELECT s.content_id, s.title, s.sub_theme, s.origin_img_url, s.map_x, s.map_y,
             ST_Distance(
                 s.geom::geography,
                 ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
             ) as distance,
             s.addr3
-            FROM sight s
+            FROM ko_sight s
             JOIN curation_sight cs ON cs.sight_content_id = s.content_id
             WHERE cs.curation_id = :curationId
             ORDER BY cs.id
@@ -88,16 +90,16 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
             @Param("latitude") Double latitude
     );
 
-    List<Sight> findAllByContentIdIn(List<String> sightIds);
+    List<KoSight> findAllByContentIdIn(List<String> sightIds);
 
 
     @Query(value = """
-            SELECT s.content_id, s.title, s.cat2, s.addr3, s.map_x, s.map_y,
+            SELECT s.content_id, s.title, s.sub_theme, s.addr3, s.map_x, s.map_y,
             ST_Distance(
                 s.geom::geography,
                 ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
             ) as distance
-            FROM sight s
+            FROM ko_sight s
             WHERE ST_Intersects(
                 s.geom,
                 ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)

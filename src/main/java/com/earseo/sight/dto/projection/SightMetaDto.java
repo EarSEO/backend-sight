@@ -1,5 +1,7 @@
 package com.earseo.sight.dto.projection;
 
+import com.earseo.sight.entity.Theme;
+
 public record SightMetaDto(
         String contentId,
         String title,
@@ -8,6 +10,6 @@ public record SightMetaDto(
         Double mapY,
         Double mapX,
         String docentUrl,
-        String cat1
+        String theme
 ) {
 }

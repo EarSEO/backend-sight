@@ -3,6 +3,7 @@ package com.earseo.sight.controller;
 import com.earseo.sight.common.BaseResponse;
 import com.earseo.sight.dto.request.CurationCreateRequest;
 import com.earseo.sight.dto.request.CurationUpdateRequest;
+import com.earseo.sight.dto.request.InitRequest;
 import com.earseo.sight.dto.response.CurationDeleteResponse;
 import com.earseo.sight.dto.response.CurationResponse;
 import com.earseo.sight.service.CurationService;
@@ -28,9 +29,13 @@ public class SightAdminController {
     private final CurationService curationService;
 
     @PostMapping("/init")
-    public ResponseEntity<BaseResponse<String>> initSight() {
-        initService.initSight();
-        initService.initDocent();
+    public ResponseEntity<BaseResponse<String>> initSight(
+            @RequestBody
+            @Valid
+            InitRequest request
+    ) {
+        initService.initSight(request.lang());
+        initService.initDocent(request.lang());
         return ResponseEntity.ok(BaseResponse.ok(null));
     }
 
