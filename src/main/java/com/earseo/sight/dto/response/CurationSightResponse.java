@@ -17,6 +17,9 @@ public record CurationSightResponse(
         @Schema(description = "대표 이미지 URL", example = "https://example.com/image.jpg")
         String imgUrl,
 
+        @Schema(description = "경/위도")
+        PathPoint point,
+
         @Schema(description = "현재 위치로부터의 직선 거리 (미터)", example = "1234.56")
         Double distance,
 
@@ -29,6 +32,7 @@ public record CurationSightResponse(
                 dto.title(),
                 SubTheme.valueOf(dto.subTheme()),
                 dto.originImgUrl(),
+                new PathPoint(dto.mapX(), dto.mapY()),
                 dto.distance(),
                 dto.addr3()
         );

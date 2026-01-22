@@ -73,7 +73,7 @@ public interface KoSightRepository extends JpaRepository<KoSight, Long> {
     List<SightMetaDto> findByContentId(@Param("ids") List<String> ids);
 
     @Query(value = """
-            SELECT s.content_id, s.title, s.sub_theme, s.origin_img_url,
+            SELECT s.content_id, s.title, s.sub_theme, s.origin_img_url, s.map_x, s.map_y,
             ST_Distance(
                 s.geom::geography,
                 ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography

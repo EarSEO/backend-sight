@@ -5,6 +5,8 @@ public record CurationSightItemDto(
         String title,
         String subTheme,
         String originImgUrl,
+        Double mapX,
+        Double mapY,
         Double distance,
         String addr3
 ) {
