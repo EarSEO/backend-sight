@@ -71,9 +71,9 @@ public class InitService {
     }
 
     @Transactional
-    public void initDocent(String lang) {
+    public void initDocent() {
         RestClient client = RestClient.create();
-        String s3Key = String.format("core/master/docent_data.json", lang);
+        String s3Key = "core/docent/docent_data.json";
         String cdnUrl = getCloudFrontDomain(s3Key);
 
         try {
@@ -161,6 +161,6 @@ public class InitService {
     }
 
     private String getCloudFrontDomain(String s3Key){
-        return String.format("%s/%s", cloudFrontDomain, s3Key);
+        return String.format("%s%s", cloudFrontDomain, s3Key);
     }
 }
