@@ -91,7 +91,7 @@ public class SightUserController {
             @NotBlank(message = "관광지 ID는 필수입니다")
             String sightId
     ) {
-        return ResponseEntity.ok(BaseResponse.ok(bookmarkService.addBookmark(memberId, sightId)));
+        return ResponseEntity.ok(BaseResponse.ok(bookmarkService.addBookmark(memberId, sightId, "ko")));
     }
 
     @Operation(
