@@ -1,5 +1,6 @@
 package com.earseo.sight.dto.response;
 
+import ch.hsr.geohash.GeoHash;
 import com.earseo.sight.dto.projection.CurationSightItemDto;
 import com.earseo.sight.entity.SubTheme;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,7 +25,10 @@ public record CurationSightResponse(
         Double distance,
 
         @Schema(description = "주소 요약 (구/동 단위)", example = "서울 종로구")
-        String address
+        String address,
+
+        @Schema(description = "이야기 스팟 조회용 GeoHash", example = "wydm6dqkm")
+        String geoHash
 ) {
     public static CurationSightResponse toDto(CurationSightItemDto dto) {
         return new CurationSightResponse(
@@ -34,7 +38,12 @@ public record CurationSightResponse(
                 dto.originImgUrl(),
                 new PathPoint(dto.mapX(), dto.mapY()),
                 dto.distance(),
-                dto.addr3()
+                dto.addr3(),
+                getGeoHash(dto.mapX(), dto.mapY())
         );
+    }
+
+    private static String getGeoHash(double longitude, double latitude) {
+        return GeoHash.withCharacterPrecision(latitude, longitude, 9).toBase32();
     }
 }
