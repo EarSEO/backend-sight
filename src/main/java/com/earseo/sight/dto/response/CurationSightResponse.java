@@ -14,6 +14,9 @@ public record CurationSightResponse(
         @Schema(description = "관광지 하위 테마 (코드)", example = "CU01")
         SubTheme subTheme,
 
+        @Schema(description = "대표 이미지 URL", example = "https://example.com/image.jpg")
+        String imgUrl,
+
         @Schema(description = "현재 위치로부터의 직선 거리 (미터)", example = "1234.56")
         Double distance,
 
@@ -24,7 +27,8 @@ public record CurationSightResponse(
         return new CurationSightResponse(
                 dto.contentId(),
                 dto.title(),
-                SubTheme.valueOf(dto.cat2()),
+                SubTheme.valueOf(dto.subTheme()),
+                dto.originImgUrl(),
                 dto.distance(),
                 dto.addr3()
         );
