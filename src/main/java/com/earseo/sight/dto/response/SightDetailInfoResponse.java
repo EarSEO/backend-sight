@@ -18,7 +18,7 @@ public record SightDetailInfoResponse(
         SubTheme subTheme,
 
         @Schema(description = "관광지 개요/설명", example = "조선시대 왕궁으로 500년 역사를 간직하고 있습니다")
-        String outl,
+        String overview,
 
         @Schema(description = "관광지 이름", example = "경복궁")
         String title,
@@ -68,9 +68,9 @@ public record SightDetailInfoResponse(
     public static SightDetailInfoResponse toDto(SightDetailItemDto dto, List<CurationResponse> curationList) {
         return new SightDetailInfoResponse(
                 dto.contentId(),
-                Theme.valueOf(dto.cat1()),
-                SubTheme.valueOf(dto.cat2()),
-                dto.outl(),
+                Theme.valueOf(dto.theme()),
+                SubTheme.valueOf(dto.subTheme()),
+                dto.overview(),
                 dto.title(),
                 dto.addr1(),
                 dto.addr3(),

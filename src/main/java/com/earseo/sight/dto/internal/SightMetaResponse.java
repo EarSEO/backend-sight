@@ -22,7 +22,7 @@ public record SightMetaResponse(
                 dto.mapY(),
                 dto.mapX(),
                 dto.docentUrl(),
-                Theme.valueOf(dto.cat1())
+                Theme.valueOf(dto.theme())
         );
     }
 }
