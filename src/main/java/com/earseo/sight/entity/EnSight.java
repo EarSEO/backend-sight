@@ -12,7 +12,8 @@ import org.locationtech.jts.geom.Point;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Sight {
+@Table(name = "en_sight")
+public class EnSight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,31 +21,13 @@ public class Sight {
     @Column(name = "content_id", nullable = false, unique = true)
     private String contentId;
 
-    @Column(name = "content_type_id")
-    private String contentTypeId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "theme")
+    private Theme theme;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "cat1")
-    private Theme cat1;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "cat2")
-    private SubTheme cat2;
-
-    @Column(name = "cat3")
-    private String cat3;
-
-    @Column(name = "ocat1")
-    private String ocat1;
-
-    @Column(name = "ocat2")
-    private String ocat2;
-
-    @Column(name = "ocat3")
-    private String ocat3;
-
-    @Column(name = "outl", columnDefinition = "TEXT")
-    private String outl;
+    @Column(name = "sub_theme")
+    private SubTheme subTheme;
 
     @Column(name = "title")
     private String title;
@@ -64,23 +47,14 @@ public class Sight {
     @Column(name = "map_y")
     private Double mapY;
 
-    @Column(name = "modifiedtime")
-    private String modifiedtime;
-
     @Column(name = "tel", columnDefinition = "TEXT")
     private String tel;
-
-    @Column(name = "m_level")
-    private Integer mLevel;
 
     @Column(name = "overview", columnDefinition = "TEXT")
     private String overview;
 
     @Column(name = "origin_img_url", columnDefinition = "TEXT")
     private String originImgUrl;
-
-    @Column(name = "small_img_url", columnDefinition = "TEXT")
-    private String smallImgUrl;
 
     @Column(name = "use_time", columnDefinition = "TEXT")
     private String usetime;
