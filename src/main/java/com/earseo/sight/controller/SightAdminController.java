@@ -28,14 +28,19 @@ public class SightAdminController {
     private final InitService initService;
     private final CurationService curationService;
 
-    @PostMapping("/init")
+    @PostMapping("/init/sight")
     public ResponseEntity<BaseResponse<String>> initSight(
             @RequestBody
             @Valid
             InitRequest request
     ) {
         initService.initSight(request.lang());
-        initService.initDocent(request.lang());
+        return ResponseEntity.ok(BaseResponse.ok(null));
+    }
+
+    @PostMapping("/init/docent")
+    public ResponseEntity<BaseResponse<String>> initDocent() {
+        initService.initDocent();
         return ResponseEntity.ok(BaseResponse.ok(null));
     }
 
