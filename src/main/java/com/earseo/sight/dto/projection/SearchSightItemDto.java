@@ -7,6 +7,7 @@ public record SearchSightItemDto(
         String addr3,
         Double mapX,
         Double mapY,
-        Double distance
+        Double distance,
+        boolean isBookmark
 ) {
 }

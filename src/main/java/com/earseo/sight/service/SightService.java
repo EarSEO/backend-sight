@@ -115,16 +115,16 @@ public class SightService {
     public SearchSightList searchSight(
             String keyword, Double longitude, Double latitude,
             Double minLongitude, Double minLatitude,
-            Double maxLongitude, Double maxLatitude, Integer limit, String lang) {
+            Double maxLongitude, Double maxLatitude, Integer limit, String lang, Long memberId) {
         if (minLongitude >= maxLongitude || minLatitude >= maxLatitude) {
             throw new BaseException(SightError.INVALID_COORDINATE_RANGE);
         }
 
         List<SearchSightItemDto> sights;
         if (lang.equals("en")) {
-            sights = enSightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit);
+            sights = enSightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit, memberId);
         } else {
-            sights = koSightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit);
+            sights = koSightRepository.findByKeywordAndRectangle(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit, memberId);
         }
         List<SearchSightResponse> sightResponses = sights.stream()
                 .map(SearchSightResponse::toDto)
