@@ -98,15 +98,23 @@ public interface EnSightRepository extends JpaRepository<EnSight, Long> {
             ST_Distance(
                 s.geom::geography,
                 ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
-            ) as distance
+            ) as distance,
+            CASE WHEN :memberId IS NOT NULL AND sb.id IS NOT NULL
+                 THEN true
+                 ELSE false
+            END as is_bookmark
             FROM en_sight s
+            LEFT JOIN sight_bookmark sb
+                        ON sb.content_id = s.content_id
+                        AND sb.member_id = :memberId
             WHERE ST_Intersects(
                 s.geom,
                 ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326)
-            ) AND
-            :keyword IS NULL OR
-            :keyword = '' OR
-            s.title ILIKE '%' || :keyword || '%'
+            ) AND (
+                :keyword IS NULL OR
+                :keyword = '' OR
+                s.title ILIKE '%' || :keyword || '%'
+            )
             ORDER BY distance
             LIMIT :limit
             """, nativeQuery = true)
@@ -118,6 +126,7 @@ public interface EnSightRepository extends JpaRepository<EnSight, Long> {
             @Param("minLatitude") Double minLatitude,
             @Param("maxLongitude") Double maxLongitude,
             @Param("maxLatitude") Double maxLatitude,
-            @Param("limit") Integer limit
+            @Param("limit") Integer limit,
+            @Param("memberId") Long memberId
     );
 }

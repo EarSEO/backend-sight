@@ -588,10 +588,13 @@ public class SightController {
             @RequestParam(defaultValue = "10")
             @Min(value = 1, message = "제한 개수는 1 이상이어야 합니다")
             @Max(value = 100, message = "제한 개수는 100 이하여야 합니다")
-            Integer limit
+            Integer limit,
+
+            @RequestHeader(value = "X-USER-ID", required = false)
+            Long memberId
     ) {
         return ResponseEntity.ok(BaseResponse.ok(
-                sightService.searchSight(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit, "ko")
+                sightService.searchSight(keyword, longitude, latitude, minLongitude, minLatitude, maxLongitude, maxLatitude, limit, "ko", memberId)
         ));
     }
 }

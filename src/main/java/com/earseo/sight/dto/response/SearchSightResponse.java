@@ -24,7 +24,9 @@ public record SearchSightResponse(
         Double latitude,
 
         @Schema(description = "현재 위치로부터의 직선 거리 (미터)", example = "1234.56")
-        Double distance
+        Double distance,
+
+        LocationType locationType
 ) {
     public static SearchSightResponse toDto(SearchSightItemDto dto){
         return new SearchSightResponse(
@@ -34,7 +36,8 @@ public record SearchSightResponse(
                 dto.addr3(),
                 dto.mapX(),
                 dto.mapY(),
-                dto.distance()
+                dto.distance(),
+                dto.isBookmark() ? LocationType.BOOKMARK : LocationType.SIGHT
         );
     }
 }
